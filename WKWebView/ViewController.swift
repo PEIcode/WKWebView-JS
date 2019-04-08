@@ -33,6 +33,7 @@ class ViewController: UIViewController, WKScriptMessageHandler, WKNavigationDele
     func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
         let path = Bundle.main.path(forResource: "data.txt", ofType: nil)
         let str = try? String(contentsOfFile: path!, encoding: .utf8)
+        //iOS调用js的方法，response代表回传的数据
         wkWebView?.evaluateJavaScript(str ?? "", completionHandler: { (response, error) in
 //            print(response, error)
         })
