@@ -49,9 +49,8 @@ class ViewController: UIViewController, WKScriptMessageHandler, WKNavigationDele
             default:
                 print("未知操作")
             }
-//            print(message.body)
-//            let bodys = message.body as! [Int]
-//
+
+            
         }
     }
     //此方法作为js的alert方法接口的实现，默认弹出窗口应该只有提示信息及一个确认按钮，当然可以添加更多按钮以及其他内容，但是并不会起到什么作用
