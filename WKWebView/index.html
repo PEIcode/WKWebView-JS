@@ -26,6 +26,10 @@
             font-size: 30px;
         }
 
+        img{
+            width: 200px;
+            height: 200px;
+        }
         </style>
 
     </head>
@@ -37,7 +41,8 @@
         <button onclick="alertAction()">点击弹框</button>
         <button onclick="buttonAction()">点击向iOS传数据</button>
         <button onclick="openCamera()">拍照</button>
-
+        <button onclick="openAlbumLibrary()">打开相册</button>
+        <img src="http://i0.sinaimg.cn/dy/photo/2013/images/icon.png" alt="图片" />
     </body>
 
     <script>
@@ -64,12 +69,23 @@
     function openCamera(){
         try{
             <!--js向ios传递数据-->
-            window.webkit.messageHandlers.nativeMethod.postMessage("openCamera");
+            window.webkit.messageHandlers.nativeMethod.postMessage("拍照");
         }catch (e){
 
         }
     }
+    function openAlbumLibrary(){
+        try{
+            <!--js向ios传递数据-->
+            window.webkit.messageHandlers.nativeMethod.postMessage("相册");
+        }catch (e){
 
+        }
+    }
+    function loadImage(a){
+        var element = document.getElementById('img')
+        element.src = a
+    }
     </script>
 
 </html>

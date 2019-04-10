@@ -9,9 +9,8 @@
 import UIKit
 import WebKit
 class ViewController: UIViewController, WKScriptMessageHandler, WKNavigationDelegate, WKUIDelegate {
-
-
     var wkWebView: WKWebView?
+    var imageVC: UIImagePickerController?
     override func viewDidLoad() {
         super.viewDidLoad()
         let config = WKWebViewConfiguration()
@@ -28,6 +27,7 @@ class ViewController: UIViewController, WKScriptMessageHandler, WKNavigationDele
 
         let userCC = config.userContentController
         userCC.add(self, name: "nativeMethod")
+//        userCC.addUserScript(WKUserScript)
     }
     // 在页面加载完成时，注入JS代码,要不然还没加载完时就可以点击了,就不能调用我们的代码了!
     func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
@@ -44,11 +44,15 @@ class ViewController: UIViewController, WKScriptMessageHandler, WKNavigationDele
         if message.name == "nativeMethod" {
             switch message.body as! String
             {
-            case "openCamera":
+            case "拍照":
                 print("打开相机")
-                show(meassge: "openCamera")
+                show(meassge: "打开相机")
+//                openCamera()
+            case "相册":
+                openAlbum()
             default:
                 print("未知操作")
+                show(meassge: "未知操作")
             }
         }
     }
@@ -77,5 +81,60 @@ class ViewController: UIViewController, WKScriptMessageHandler, WKNavigationDele
         self.present(alertVC, animated: true, completion: nil)
     }
 
+    ///打开相机
+    func openCamera() {
+        if UIImagePickerController.isSourceTypeAvailable(.camera) {
+            imageVC = UIImagePickerController()
+            imageVC?.sourceType = .camera
+            imageVC?.delegate = self
+            self.present(imageVC!, animated: true, completion: nil)
+        }
+    }
+    ///打开相册
+    func openAlbum() {
+        if UIImagePickerController.isSourceTypeAvailable(.photoLibrary) {
+            imageVC = UIImagePickerController()
+            imageVC?.sourceType = .photoLibrary
+            imageVC?.delegate = self
+            self.present(imageVC!, animated: true, completion: nil)
+        }
+    }
+    deinit {
+        wkWebView?.configuration.userContentController.removeScriptMessageHandler(forName: "nativeMethod")
+    }
+}
+// ViewController必须实现 UIImagePickerControllerDelegate & UINavigationControllerDelegate
+extension ViewController: UIImagePickerControllerDelegate, UINavigationControllerDelegate {
+    func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
+        print(info)
+        let type = info[.mediaType]
+
+//        switch type {
+//        case UIImagePickerController.InfoKey.imageURL :
+//            <#code#>
+//        default:
+//            <#code#>
+//        }
+//        wkWebView?.loadFileURL(imageUrl as! URL, allowingReadAccessTo: imageUrl as! URL)
+//let imageString = String()
+//        NSData(contentsOfFile: )
+//        wkWebView?.load(Data, mimeType: <#T##String#>, characterEncodingName: <#T##String#>, baseURL: <#T##URL#>)
+//        self.wkWebView?.load(image, mimeType: .image, characterEncodingName: <#T##String#>, baseURL: <#T##URL#>)
+        self.dismiss(animated: true, completion: {
+            //拿到图片，其实需要根据info[.mediaType]来判断资源是什么类型，这里已知是图片
+
+//            let image = info[.originalImage] as? UIImage
+            let imageUrl = info[.imageURL] as! URL
+
+            //imgStr    String    "file:///Users/liaopeizhi/Library/Developer/CoreSimulator/Devices/1A5C7CAD-DD5C-443A-B5F9-12DB810905A4/data/Containers/Data/Application/A4AE7FD3-CB92-46F1-8613-947F1BC86201/tmp/C89B33BD-FB2A-4CB1-9E72-0EFBF245D6BB.jpeg"    
+//            let imgStr = imageUrl.absoluteString
+//            let script = "loadImage('\(imageUrl)')"
+            self.wkWebView?.loadFileURL(imageUrl, allowingReadAccessTo: imageUrl)
+//            self.wkWebView?.evaluateJavaScript(script, completionHandler: nil)
+        })
+    }
+    func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
+        self.dismiss(animated: true, completion: nil)
+    }
 }
 

@@ -22,8 +22,12 @@
 	<string>1</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
+	<key>NSCameraUsageDescription</key>
+	<string>我可以打开相机么</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string>I want to get your address</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>我想访问你的相册</string>
 	<key>UILaunchStoryboardName</key>
 	<string>LaunchScreen</string>
 	<key>UIMainStoryboardFile</key>
